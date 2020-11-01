@@ -1,2 +1,5 @@
 add_stage 2 3 4
 add_stage 3 4 5 6
+add_car 2
+add_car 4
+add_car 7

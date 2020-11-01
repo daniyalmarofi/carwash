@@ -3,6 +3,13 @@
 using namespace std;
 
 class Car {
+    public:
+    Car(int _id, int _luxury_coefficient){
+        id=_id;
+        luxury_coefficient=_luxury_coefficient;
+    }
+    int get_id() { return id; }
+    int get_luxury_coefficient() { return luxury_coefficient; }
    private:
     int id;
     int luxury_coefficient;
@@ -45,11 +52,18 @@ class Carwash {
         return number_of_workers - 1;
     }
     vector<Stage> get_stages() { return stages; }
+    void add_car(int car_luxury_coefficient){
+        cars.push_back(Car(cars.size(),car_luxury_coefficient));
+    }
+    vector<Car> get_cars(){return cars;}
 
    private:
-    vector<Stage> stages;
     int number_of_workers;
+    vector<Stage> stages;
+    vector<Car> cars;
 };
+
+//****************************************************************
 
 Carwash add_stage_command(Carwash carwash) {
     int number_of_stage_workers;
@@ -64,6 +78,13 @@ Carwash add_stage_command(Carwash carwash) {
     return carwash;
 }
 
+Carwash add_car_command(Carwash carwash) {
+    int car_luxury_coefficient;
+    cin >> car_luxury_coefficient;
+    carwash.add_car(car_luxury_coefficient);
+    return carwash;
+}
+
 void print_OK() { cout << "OK" << endl; }
 
 Carwash handle_user_commands(Carwash carwash) {
@@ -71,6 +92,10 @@ Carwash handle_user_commands(Carwash carwash) {
     while (cin >> command) {
         if (!command.compare("add_stage")) {
             carwash = add_stage_command(carwash);
+            print_OK();
+        }
+        if (!command.compare("add_car")) {
+            carwash = add_car_command(carwash);
             print_OK();
         }
     }
@@ -87,6 +112,9 @@ int main() {
     //     for (Worker w : workers) {
     //         cout << w.get_id() << " " << w.get_time_coefficient() << endl;
     //     }
+    // }
+    // for(Car c:carwash.get_cars()){
+    //     cout<<c.get_id()<<" : "<<c.get_luxury_coefficient()<<endl;
     // }
 
     return 0;
