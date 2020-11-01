@@ -3,13 +3,14 @@
 using namespace std;
 
 class Car {
-    public:
-    Car(int _id, int _luxury_coefficient){
-        id=_id;
-        luxury_coefficient=_luxury_coefficient;
+   public:
+    Car(int _id, int _luxury_coefficient) {
+        id = _id;
+        luxury_coefficient = _luxury_coefficient;
     }
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
+
    private:
     int id;
     int luxury_coefficient;
@@ -52,10 +53,14 @@ class Carwash {
         return number_of_workers - 1;
     }
     vector<Stage> get_stages() { return stages; }
-    void add_car(int car_luxury_coefficient){
-        cars.push_back(Car(cars.size(),car_luxury_coefficient));
+    void add_car(int car_luxury_coefficient) {
+        cars.push_back(Car(cars.size(), car_luxury_coefficient));
     }
-    vector<Car> get_cars(){return cars;}
+    vector<Car> get_cars() { return cars; }
+
+    void advance_time(int time_step){
+        // 
+    }
 
    private:
     int number_of_workers;
@@ -85,6 +90,13 @@ Carwash add_car_command(Carwash carwash) {
     return carwash;
 }
 
+Carwash advance_time_command(Carwash carwash) {
+    int time_step;
+    cin >> time_step;
+    carwash.advance_time(time_step);
+    return carwash;
+}
+
 void print_OK() { cout << "OK" << endl; }
 
 Carwash handle_user_commands(Carwash carwash) {
@@ -96,6 +108,10 @@ Carwash handle_user_commands(Carwash carwash) {
         }
         if (!command.compare("add_car")) {
             carwash = add_car_command(carwash);
+            print_OK();
+        }
+        if (!command.compare("add_car")) {
+            carwash = advance_time_command(carwash);
             print_OK();
         }
     }
