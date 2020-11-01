@@ -10,7 +10,7 @@ class Car {
     }
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
-    int get_timeleft(){return timeleft;}
+    int get_timeleft() { return timeleft; }
 
    private:
     int id;
@@ -28,9 +28,7 @@ class Worker {
     int get_id() { return id; }
     int get_time_coefficient() { return time_coefficient; }
     string get_status() { return status; }
-    Car* get_working_car(){
-        return working_car;
-    }
+    Car* get_working_car() { return working_car; }
 
    private:
     int id;
@@ -47,9 +45,15 @@ class Stage {
     }
     vector<Worker> get_workers() { return workers; }
 
+    void add_car_to_waiting_queue(Car* waiting_car) {
+        waiting_queue.push_back(waiting_car);
+    }
+
+    vector<Car*> get_wating_cars() { return waiting_queue; }
+
    private:
     vector<Worker> workers;
-    vector<Car> waiting_queue;
+    vector<Car*> waiting_queue;
 };
 
 class Carwash {
@@ -60,10 +64,14 @@ class Carwash {
         number_of_workers += 1;
         return number_of_workers - 1;
     }
+
     vector<Stage> get_stages() { return stages; }
+
     void add_car(int car_luxury_coefficient) {
         cars.push_back(Car(cars.size(), car_luxury_coefficient));
+        stages[0].add_car_to_waiting_queue(&cars.back());
     }
+    
     vector<Car> get_cars() { return cars; }
 
     void advance_time(int time_step) {
@@ -116,13 +124,19 @@ void show_stage_info_command(Carwash carwash) {
         cout << "Worker ID: " << worker.get_id() << endl;
         if (worker.get_status() == "Free") {
             cout << "Free" << endl;
+        } else {
+            Car* working_on_car = worker.get_working_car();
+            cout << "Car ID: " << working_on_car->get_id() << endl;
+            cout << "Luxury coefficient: "
+                 << working_on_car->get_luxury_coefficient() << endl;
+            cout << "Time left: " << working_on_car->get_timeleft() << endl;
         }
-        else{
-            Car* working_on_car=worker.get_working_car();
-            cout<<"Car ID: "<<working_on_car->get_id()<<endl;
-            cout<<"Luxury coefficient: "<<working_on_car->get_luxury_coefficient()<<endl;
-            cout<<"Time left: "<<working_on_car->get_timeleft()<<endl;
-        }
+    }
+    cout << "Cars in waiting queue:" << endl;
+    for (auto waiting_car : the_stage.get_wating_cars()) {
+        cout << "Car ID: " << waiting_car->get_id() << endl;
+        cout << "Luxury coefficient: " << waiting_car->get_luxury_coefficient()
+             << endl;
     }
 }
 
