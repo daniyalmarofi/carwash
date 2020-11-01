@@ -10,6 +10,7 @@ class Car {
     }
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
+    int get_timeleft(){return timeleft;}
 
    private:
     int id;
@@ -22,13 +23,20 @@ class Worker {
     Worker(int worker_id, int worker_time_coefficient) {
         id = worker_id;
         time_coefficient = worker_time_coefficient;
+        status = "Free";
     }
     int get_id() { return id; }
     int get_time_coefficient() { return time_coefficient; }
+    string get_status() { return status; }
+    Car* get_working_car(){
+        return working_car;
+    }
 
    private:
     int id;
     int time_coefficient;
+    string status;
+    Car* working_car;
 };
 
 class Stage {
@@ -99,12 +107,23 @@ Carwash advance_time_command(Carwash carwash) {
     return carwash;
 }
 
-Carwash show_stage_info_command(Carwash carwash) {
+void show_stage_info_command(Carwash carwash) {
     int stage_id;
     cin >> stage_id;
     Stage the_stage = carwash.get_stage_by_id(stage_id);
-    cout << the_stage.get_workers().size() << endl;
-    return carwash;
+    cout << "Stage ID: " << stage_id << endl;
+    for (auto worker : the_stage.get_workers()) {
+        cout << "Worker ID: " << worker.get_id() << endl;
+        if (worker.get_status() == "Free") {
+            cout << "Free" << endl;
+        }
+        else{
+            Car* working_on_car=worker.get_working_car();
+            cout<<"Car ID: "<<working_on_car->get_id()<<endl;
+            cout<<"Luxury coefficient: "<<working_on_car->get_luxury_coefficient()<<endl;
+            cout<<"Time left: "<<working_on_car->get_timeleft()<<endl;
+        }
+    }
 }
 
 void print_OK() { cout << "OK" << endl; }
@@ -120,12 +139,12 @@ Carwash handle_user_commands(Carwash carwash) {
             carwash = add_car_command(carwash);
             print_OK();
         }
-        if (!command.compare("add_car")) {
+        if (!command.compare("advance_time")) {
             carwash = advance_time_command(carwash);
             print_OK();
         }
         if (!command.compare("show_stage_info")) {
-            carwash = show_stage_info_command(carwash);
+            show_stage_info_command(carwash);
         }
     }
     return carwash;
