@@ -58,9 +58,11 @@ class Carwash {
     }
     vector<Car> get_cars() { return cars; }
 
-    void advance_time(int time_step){
-        // 
+    void advance_time(int time_step) {
+        //
     }
+
+    Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
 
    private:
     int number_of_workers;
@@ -97,6 +99,14 @@ Carwash advance_time_command(Carwash carwash) {
     return carwash;
 }
 
+Carwash show_stage_info_command(Carwash carwash) {
+    int stage_id;
+    cin >> stage_id;
+    Stage the_stage = carwash.get_stage_by_id(stage_id);
+    cout << the_stage.get_workers().size() << endl;
+    return carwash;
+}
+
 void print_OK() { cout << "OK" << endl; }
 
 Carwash handle_user_commands(Carwash carwash) {
@@ -113,6 +123,9 @@ Carwash handle_user_commands(Carwash carwash) {
         if (!command.compare("add_car")) {
             carwash = advance_time_command(carwash);
             print_OK();
+        }
+        if (!command.compare("show_stage_info")) {
+            carwash = show_stage_info_command(carwash);
         }
     }
     return carwash;
