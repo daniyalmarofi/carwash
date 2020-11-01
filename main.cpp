@@ -11,6 +11,7 @@ class Car {
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
     int get_timeleft() { return timeleft; }
+    void set_timeleft(int new_time_left) { timeleft = new_time_left; }
 
    private:
     int id;
@@ -46,6 +47,7 @@ class Stage {
     vector<Worker> get_workers() { return workers; }
 
     void add_car_to_waiting_queue(Car* waiting_car) {
+        waiting_car->set_timeleft(12);
         waiting_queue.push_back(waiting_car);
     }
 
@@ -68,10 +70,11 @@ class Carwash {
     vector<Stage> get_stages() { return stages; }
 
     void add_car(int car_luxury_coefficient) {
-        cars.push_back(Car(cars.size(), car_luxury_coefficient));
-        stages[0].add_car_to_waiting_queue(&cars.back());
+        Car new_car(cars.size(), car_luxury_coefficient);
+        cars.push_back(new_car);
+        stages.front().add_car_to_waiting_queue(new Car(new_car));
     }
-    
+
     vector<Car> get_cars() { return cars; }
 
     void advance_time(int time_step) {
@@ -167,14 +170,17 @@ Carwash handle_user_commands(Carwash carwash) {
 int main() {
     Carwash carwash;
     carwash = handle_user_commands(carwash);
-    // for (Stage s : carwash.get_stages()) {
-    //     vector<Worker> workers = s.get_workers();
-    //     cout << "stage\t"
-    //          << "count: " << workers.size() << endl;
-    //     for (Worker w : workers) {
-    //         cout << w.get_id() << " " << w.get_time_coefficient() << endl;
-    //     }
-    // }
+    for (Stage s : carwash.get_stages()) {
+        vector<Worker> workers = s.get_workers();
+        // cout << "stage\t"
+        //      << "count: " << workers.size() << endl;
+        // for (Worker w : workers) {
+        //     cout << w.get_id() << " " << w.get_time_coefficient() << endl;
+        // }
+        // for (auto c : s.get_wating_cars()) {
+        //     cout << "w: " << c->get_luxury_coefficient() << endl;
+        // }
+    }
     // for(Car c:carwash.get_cars()){
     //     cout<<c.get_id()<<" : "<<c.get_luxury_coefficient()<<endl;
     // }
