@@ -29,6 +29,12 @@ class Worker {
     int get_id() { return id; }
     int get_time_coefficient() { return time_coefficient; }
     string get_status() { return status; }
+    void toggle_status() {
+        if (status == "Free")
+            status = "Working";
+        else
+            status = "Free";
+    }
     Car* get_working_car() { return working_car; }
 
    private:
@@ -45,9 +51,13 @@ class Stage {
         workers.push_back(worker);
     }
     vector<Worker> get_workers() { return workers; }
+    int get_free_worker_time_coefficient() {
+        // for(auto )
+    }
 
     void add_car_to_waiting_queue(Car* waiting_car) {
-        waiting_car->set_timeleft(12);
+        waiting_car->set_timeleft(waiting_car->get_luxury_coefficient() *
+                                  get_free_worker_time_coefficient());
         waiting_queue.push_back(waiting_car);
     }
 
@@ -72,7 +82,8 @@ class Carwash {
     void add_car(int car_luxury_coefficient) {
         Car new_car(cars.size(), car_luxury_coefficient);
         cars.push_back(new_car);
-        stages.front().add_car_to_waiting_queue(new Car(new_car));
+        // stages.front().add_car_to_waiting_queue(new Car(new_car));
+        waiting_queue.push_back(new Car(new_car));
     }
 
     vector<Car> get_cars() { return cars; }
@@ -87,6 +98,7 @@ class Carwash {
     int number_of_workers;
     vector<Stage> stages;
     vector<Car> cars;
+    vector<Car*> waiting_queue;
 };
 
 //****************************************************************
@@ -111,7 +123,7 @@ Carwash add_car_command(Carwash carwash) {
     return carwash;
 }
 
-Carwash advance_time_command(Carwash carwash) {
+Carwash advance_time_one_step_command(Carwash carwash) {
     int time_step;
     cin >> time_step;
     carwash.advance_time(time_step);
@@ -157,7 +169,8 @@ Carwash handle_user_commands(Carwash carwash) {
             print_OK();
         }
         if (!command.compare("advance_time")) {
-            carwash = advance_time_command(carwash);
+            // carwash = advance_time_command(carwash);
+            carwash.advance_time();
             print_OK();
         }
         if (!command.compare("show_stage_info")) {
