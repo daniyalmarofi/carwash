@@ -2,6 +2,8 @@
 #include <vector>
 using namespace std;
 
+void print_error(string message) { cerr << message << endl; }
+
 class Car {
    public:
     Car(int _id, int _luxury_coefficient) {
@@ -36,6 +38,12 @@ class Worker {
             status = "Free";
     }
     Car* get_working_car() { return working_car; }
+    void set_working_car(Car* _working_car) {
+        if (status == "Free") {
+            toggle_status();
+            working_car = _working_car;
+        }
+    }
 
    private:
     int id;
@@ -54,7 +62,9 @@ class Stage {
 
     void add_car_to_waiting_queue(Car* waiting_car) {
         // waiting_car->set_timeleft(waiting_car->get_luxury_coefficient() *
-        // this.get_free_worker()); waiting_queue.push_back(waiting_car);
+        // this.get_free_worker());
+        // Worker* free_worker=get_free_worker();
+        waiting_queue.push_back(waiting_car);
     }
 
     vector<Car*> get_wating_cars() { return waiting_queue; }
@@ -62,8 +72,7 @@ class Stage {
    private:
     Worker* get_free_worker() {
         for (auto worker : workers)
-            if(worker.get_status()=="Free")
-                return &worker;
+            if (worker.get_status() == "Free") return &worker;
         return NULL;
     }
     vector<Worker> workers;
