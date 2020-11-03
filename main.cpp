@@ -51,19 +51,21 @@ class Stage {
         workers.push_back(worker);
     }
     vector<Worker> get_workers() { return workers; }
-    int get_free_worker_time_coefficient() {
-        // for(auto )
-    }
 
     void add_car_to_waiting_queue(Car* waiting_car) {
-        waiting_car->set_timeleft(waiting_car->get_luxury_coefficient() *
-                                  get_free_worker_time_coefficient());
-        waiting_queue.push_back(waiting_car);
+        // waiting_car->set_timeleft(waiting_car->get_luxury_coefficient() *
+        // this.get_free_worker()); waiting_queue.push_back(waiting_car);
     }
 
     vector<Car*> get_wating_cars() { return waiting_queue; }
 
    private:
+    Worker* get_free_worker() {
+        for (auto worker : workers)
+            if(worker.get_status()=="Free")
+                return &worker;
+        return NULL;
+    }
     vector<Worker> workers;
     vector<Car*> waiting_queue;
 };
