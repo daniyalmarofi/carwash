@@ -13,7 +13,9 @@ class Car {
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
     int get_timeleft() { return timeleft; }
-    void set_timeleft(int new_time_left) { timeleft = new_time_left; }
+    void set_timeleft(int worker_time_coefficient) {
+        timeleft = worker_time_coefficient * luxury_coefficient;
+    }
 
    private:
     int id;
@@ -60,19 +62,25 @@ class Stage {
     }
     vector<Worker> get_workers() { return workers; }
 
-    void add_car_to_waiting_queue(Car* waiting_car) {
+    void add_car_to_stage(Car* waiting_car) {
         // waiting_car->set_timeleft(waiting_car->get_luxury_coefficient() *
         // this.get_free_worker());
         // Worker* free_worker=get_free_worker();
-        waiting_queue.push_back(waiting_car);
+        Worker* free_worker = get_free_worker();
+        if (free_worker == NULL)
+            waiting_queue.push_back(waiting_car);
+        else {
+            waiting_car->set_timeleft(free_worker->get_time_coefficient());
+            free_worker->set_working_car(waiting_car);
+        }
     }
 
     vector<Car*> get_wating_cars() { return waiting_queue; }
 
    private:
     Worker* get_free_worker() {
-        for (auto worker : workers)
-            if (worker.get_status() == "Free") return &worker;
+        for (int i = 0; i < workers.size(); i++)
+            if (workers[i].get_status() == "Free") return &workers[i];
         return NULL;
     }
     vector<Worker> workers;
@@ -93,15 +101,18 @@ class Carwash {
     void add_car(int car_luxury_coefficient) {
         Car new_car(cars.size(), car_luxury_coefficient);
         cars.push_back(new_car);
-        // stages.front().add_car_to_waiting_queue(new Car(new_car));
+        // stages.front().add_car_to_stage(new Car(new_car));
         waiting_queue.push_back(new Car(new_car));
     }
 
     vector<Car> get_cars() { return cars; }
 
-    void advance_time(int time_step) {
-        //
+    void add_a_car_to_first_stage() {
+        stages.front().add_car_to_stage(waiting_queue.front());
+        waiting_queue.erase(waiting_queue.begin());
     }
+
+    void advance_time() { add_a_car_to_first_stage(); }
 
     Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
 
@@ -110,6 +121,7 @@ class Carwash {
     vector<Stage> stages;
     vector<Car> cars;
     vector<Car*> waiting_queue;
+    vector<Car*> finished_cars;
 };
 
 //****************************************************************
@@ -137,7 +149,7 @@ Carwash add_car_command(Carwash carwash) {
 Carwash advance_time_one_step_command(Carwash carwash) {
     int time_step;
     cin >> time_step;
-    carwash.advance_time(time_step);
+    carwash.advance_time();
     return carwash;
 }
 
