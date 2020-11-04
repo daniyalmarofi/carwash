@@ -1,5 +1,7 @@
 #include <iostream>
+#include <sstream>
 #include <vector>
+
 using namespace std;
 
 void print_error(string message) { cerr << message << endl; }
@@ -93,25 +95,28 @@ class Stage {
         return finished_worker->get_working_car();
     }
 
-    void print_stage_info() {
+    string stage_info() {
+        ostringstream outstring;
         for (auto worker : workers) {
-            cout << "Worker ID: " << worker.get_id() << endl;
+            outstring << "Worker ID: " << worker.get_id() << endl;
             if (worker.get_status() == "Free") {
-                cout << "Free" << endl;
+                outstring << "Free" << endl;
             } else {
                 Car* working_on_car = worker.get_working_car();
-                cout << "Car ID: " << working_on_car->get_id() << endl;
-                cout << "Luxury coefficient: "
-                     << working_on_car->get_luxury_coefficient() << endl;
-                cout << "Time left: " << working_on_car->get_timeleft() << endl;
+                outstring << "Car ID: " << working_on_car->get_id() << endl;
+                outstring << "Luxury coefficient: "
+                          << working_on_car->get_luxury_coefficient() << endl;
+                outstring << "Time left: " << working_on_car->get_timeleft()
+                          << endl;
             }
         }
-        cout << "Cars in waiting queue:" << endl;
+        outstring << "Cars in waiting queue:" << endl;
         for (auto waiting_car : waiting_queue) {
-            cout << "Car ID: " << waiting_car->get_id() << endl;
-            cout << "Luxury coefficient: "
-                 << waiting_car->get_luxury_coefficient() << endl;
+            outstring << "Car ID: " << waiting_car->get_id() << endl;
+            outstring << "Luxury coefficient: "
+                      << waiting_car->get_luxury_coefficient() << endl;
         }
+        return outstring.str();
     }
 
    private:
@@ -236,7 +241,7 @@ void show_stage_info_command(Carwash carwash) {
     cin >> stage_id;
     Stage the_stage = carwash.get_stage_by_id(stage_id);
     cout << "Stage ID: " << stage_id << endl;
-    the_stage.print_stage_info();
+    cout << the_stage.stage_info();
 }
 
 void show_carwash_info_command(Carwash carwash) {
