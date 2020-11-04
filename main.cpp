@@ -205,6 +205,13 @@ class Carwash {
         for (auto waiting_car : waiting_queue) {
             outstring << waiting_car->car_info(false);
         }
+        outstring << "Stages info:" << endl;
+        for (auto stage : stages) {
+            outstring << stage.stage_info();
+        }
+        for (auto finished_car : finished_cars) {
+            outstring << finished_car->car_info(false);
+        }
     }
 
    private:
