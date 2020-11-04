@@ -195,10 +195,13 @@ Carwash add_car_command(Carwash carwash) {
     return carwash;
 }
 
-Carwash advance_time_one_step_command(Carwash carwash) {
+Carwash advance_time_command(Carwash carwash) {
     int time_step;
     cin >> time_step;
-    carwash.advance_time();
+    while (time_step > 0) {
+        carwash.advance_time();
+        time_step -= 1;
+    }
     return carwash;
 }
 
@@ -241,8 +244,7 @@ Carwash handle_user_commands(Carwash carwash) {
             print_OK();
         }
         if (!command.compare("advance_time")) {
-            // carwash = advance_time_command(carwash);
-            carwash.advance_time();
+            carwash = advance_time_command(carwash);
             print_OK();
         }
         if (!command.compare("show_stage_info")) {

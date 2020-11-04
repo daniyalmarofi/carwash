@@ -7,8 +7,6 @@ add_car 7
 show_stage_info 0
 advance_time 1
 show_stage_info 0
-advance_time 1
-show_stage_info 0
-advance_time 1
+advance_time 2
 show_stage_info 0
 show_stage_info 1
