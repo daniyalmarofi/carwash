@@ -30,6 +30,7 @@ class Car {
         if (need_timeleft) {
             outstring << "Time left: " << timeleft << endl;
         }
+        return outstring.str();
     }
 
    private:
@@ -62,6 +63,17 @@ class Worker {
         }
     }
     void wash_the_car() { working_car->being_washed(); }
+
+    string worker_info() {
+        ostringstream outstring;
+        outstring << "Worker ID: " << id << endl;
+        if (status == "Free") {
+            outstring << "Free" << endl;
+        } else {
+            outstring << working_car->car_info(true);
+        }
+        return outstring.str();
+    }
 
    private:
     int id;
@@ -107,13 +119,7 @@ class Stage {
     string stage_info() {
         ostringstream outstring;
         for (auto worker : workers) {
-            outstring << "Worker ID: " << worker.get_id() << endl;
-            if (worker.get_status() == "Free") {
-                outstring << "Free" << endl;
-            } else {
-                Car* working_on_car = worker.get_working_car();
-                outstring << working_on_car->car_info(true);
-            }
+            outstring << worker.worker_info();
         }
         outstring << "Cars in waiting queue:" << endl;
         for (auto waiting_car : waiting_queue) {
