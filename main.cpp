@@ -171,8 +171,10 @@ class Carwash {
     vector<Car*> get_cars() { return cars; }
 
     void add_a_car_to_first_stage() {
-        stages.front().add_car_to_stage(waiting_queue.front());
-        waiting_queue.erase(waiting_queue.begin());
+        if (waiting_queue.size() > 0) {
+            stages.front().add_car_to_stage(waiting_queue.front());
+            waiting_queue.erase(waiting_queue.begin());
+        }
     }
 
     void add_car_to_finished_cars(Car* finished_car) {
@@ -305,17 +307,17 @@ Carwash handle_user_commands(Carwash carwash) {
 int main() {
     Carwash carwash;
     carwash = handle_user_commands(carwash);
-    for (Stage s : carwash.get_stages()) {
-        vector<Worker> workers = s.get_workers();
-        // cout << "stage\t"
-        //      << "count: " << workers.size() << endl;
-        // for (Worker w : workers) {
-        //     cout << w.get_id() << " " << w.get_time_coefficient() << endl;
-        // }
-        // for (auto c : s.get_wating_cars()) {
-        //     cout << "w: " << c->get_luxury_coefficient() << endl;
-        // }
-    }
+    // for (Stage s : carwash.get_stages()) {
+    // vector<Worker> workers = s.get_workers();
+    // cout << "stage\t"
+    //      << "count: " << workers.size() << endl;
+    // for (Worker w : workers) {
+    //     cout << w.get_id() << " " << w.get_time_coefficient() << endl;
+    // }
+    // for (auto c : s.get_wating_cars()) {
+    //     cout << "w: " << c->get_luxury_coefficient() << endl;
+    // }
+    // }
     // for(Car c:carwash.get_cars()){
     //     cout<<c.get_id()<<" : "<<c.get_luxury_coefficient()<<endl;
     // }
