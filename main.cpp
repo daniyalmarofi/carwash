@@ -13,6 +13,7 @@ class Car {
     int get_id() { return id; }
     int get_luxury_coefficient() { return luxury_coefficient; }
     int get_timeleft() { return timeleft; }
+    void increase_timeleft() { timeleft += 1; }
     void set_timeleft(int worker_time_coefficient) {
         timeleft = worker_time_coefficient * luxury_coefficient;
     }
@@ -85,7 +86,24 @@ class Stage {
             }
     }
 
+    Car* find_finished_car() {
+        Worker* finished_worker = find_finished_worker();
+        if (finished_worker == NULL) return NULL;
+        finished_worker->toggle_status();
+        return finished_worker->get_working_car();
+    }
+
    private:
+    Worker* find_finished_worker() {
+        for (int i = 0; i < workers.size(); i++) {
+            if (workers[i].get_status() == "Working" &&
+                workers[i].get_working_car()->get_timeleft() == 0) {
+                return &workers[i];
+            }
+        }
+        return NULL;
+    }
+
     Worker* get_free_worker() {
         for (int i = 0; i < workers.size(); i++)
             if (workers[i].get_status() == "Free") return &workers[i];
@@ -108,24 +126,41 @@ class Carwash {
 
     void add_car(int car_luxury_coefficient) {
         Car new_car(cars.size(), car_luxury_coefficient);
-        cars.push_back(new_car);
-        // stages.front().add_car_to_stage(new Car(new_car));
-        waiting_queue.push_back(new Car(new_car));
+        cars.push_back(new Car(new_car));
+        waiting_queue.push_back(cars.back());
     }
 
-    vector<Car> get_cars() { return cars; }
+    vector<Car*> get_cars() { return cars; }
 
     void add_a_car_to_first_stage() {
         stages.front().add_car_to_stage(waiting_queue.front());
         waiting_queue.erase(waiting_queue.begin());
     }
 
+    void add_car_to_finished_cars(Car* finished_car) {
+        finished_cars.push_back(finished_car);
+    }
+
+    void advance_cars_to_next_step() {
+        for (int i = 0; i < stages.size(); i++) {
+            Car* finished_car = stages[i].find_finished_car();
+            if (finished_car != NULL) {
+                if (i == stages.size() - 1)
+                    add_car_to_finished_cars(finished_car);
+                else {
+                    stages[i + 1].add_car_to_stage(finished_car);
+                    finished_car->increase_timeleft();
+                }
+            }
+        }
+    }
+
     void advance_time() {
+        advance_cars_to_next_step();
         for (int i = 0; i < stages.size(); i++) {
             stages[i].wash_the_cars();
         }
         add_a_car_to_first_stage();
-
     }
 
     Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
@@ -133,7 +168,7 @@ class Carwash {
    private:
     int number_of_workers;
     vector<Stage> stages;
-    vector<Car> cars;
+    vector<Car*> cars;
     vector<Car*> waiting_queue;
     vector<Car*> finished_cars;
 };
