@@ -1,12 +1,10 @@
-add_stage 2 1 4
-add_stage 3 4 5 6
+
+add_stage 1 2
 add_car 1
-add_car 4
-add_car 7
-//add_car 6
-show_stage_info 0
+show_carwash_info
 advance_time 1
 show_stage_info 0
 advance_time 2
 show_stage_info 0
-show_stage_info 1
+advance_time 1
+show_carwash_info

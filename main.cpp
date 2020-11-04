@@ -215,9 +215,11 @@ class Carwash {
         for (auto stage : stages) {
             outstring << stage.stage_info();
         }
+        outstring << "Cars finished: " << endl;
         for (auto finished_car : finished_cars) {
             outstring << finished_car->car_info(false);
         }
+        return outstring.str();
     }
 
    private:
@@ -270,7 +272,7 @@ void show_stage_info_command(Carwash carwash) {
 }
 
 void show_carwash_info_command(Carwash carwash) {
-    //
+    cout << carwash.carwash_info();
 }
 
 void print_OK() { cout << "OK" << endl; }
