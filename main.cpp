@@ -121,7 +121,7 @@ class Stage {
         for (auto worker : workers) {
             outstring << worker.worker_info();
         }
-        outstring << "Cars in waiting queue:" << endl;
+        outstring << "Cars in waiting queue: " << endl;
         for (auto waiting_car : waiting_queue) {
             outstring << waiting_car->car_info(false);
         }
@@ -209,13 +209,14 @@ class Carwash {
     string carwash_info() {
         ostringstream outstring;
         outstring << "Passed time: " << passed_time << endl;
-        outstring << "Cars waiting:" << endl;
+        outstring << "Cars waiting: " << endl;
         for (auto waiting_car : waiting_queue) {
             outstring << waiting_car->car_info(false);
         }
-        outstring << "Stages info:" << endl;
-        for (auto stage : stages) {
-            outstring << stage.stage_info();
+        outstring << "Stages info: " << endl;
+        for (int i = 0; i < stages.size(); i++) {
+            outstring << "Stage ID: " << i << endl;
+            outstring << stages[i].stage_info();
         }
         outstring << "Cars finished: " << endl;
         for (auto finished_car : finished_cars) {
