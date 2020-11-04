@@ -77,7 +77,7 @@ class Stage {
         }
     }
 
-    vector<Car*> get_wating_cars() { return waiting_queue; }
+    vector<Car*> get_waiting_cars() { return waiting_queue; }
 
     void wash_the_cars() {
         for (int i = 0; i < workers.size(); i++)
@@ -91,6 +91,27 @@ class Stage {
         if (finished_worker == NULL) return NULL;
         finished_worker->toggle_status();
         return finished_worker->get_working_car();
+    }
+
+    void print_stage_info() {
+        for (auto worker : workers) {
+            cout << "Worker ID: " << worker.get_id() << endl;
+            if (worker.get_status() == "Free") {
+                cout << "Free" << endl;
+            } else {
+                Car* working_on_car = worker.get_working_car();
+                cout << "Car ID: " << working_on_car->get_id() << endl;
+                cout << "Luxury coefficient: "
+                     << working_on_car->get_luxury_coefficient() << endl;
+                cout << "Time left: " << working_on_car->get_timeleft() << endl;
+            }
+        }
+        cout << "Cars in waiting queue:" << endl;
+        for (auto waiting_car : waiting_queue) {
+            cout << "Car ID: " << waiting_car->get_id() << endl;
+            cout << "Luxury coefficient: "
+                 << waiting_car->get_luxury_coefficient() << endl;
+        }
     }
 
    private:
@@ -115,7 +136,10 @@ class Stage {
 
 class Carwash {
    public:
-    Carwash() { number_of_workers = 0; }
+    Carwash() {
+        number_of_workers = 0;
+        passed_time = 0;
+    }
     void add_stage(Stage stage) { stages.push_back(stage); }
     int get_new_worker_id() {
         number_of_workers += 1;
@@ -156,6 +180,7 @@ class Carwash {
     }
 
     void advance_time() {
+        passed_time += 1;
         advance_cars_to_next_step();
         for (int i = 0; i < stages.size(); i++) {
             stages[i].wash_the_cars();
@@ -170,6 +195,7 @@ class Carwash {
     vector<Stage> stages;
     vector<Car*> cars;
     vector<Car*> waiting_queue;
+    int passed_time;
     vector<Car*> finished_cars;
 };
 
@@ -210,24 +236,11 @@ void show_stage_info_command(Carwash carwash) {
     cin >> stage_id;
     Stage the_stage = carwash.get_stage_by_id(stage_id);
     cout << "Stage ID: " << stage_id << endl;
-    for (auto worker : the_stage.get_workers()) {
-        cout << "Worker ID: " << worker.get_id() << endl;
-        if (worker.get_status() == "Free") {
-            cout << "Free" << endl;
-        } else {
-            Car* working_on_car = worker.get_working_car();
-            cout << "Car ID: " << working_on_car->get_id() << endl;
-            cout << "Luxury coefficient: "
-                 << working_on_car->get_luxury_coefficient() << endl;
-            cout << "Time left: " << working_on_car->get_timeleft() << endl;
-        }
-    }
-    cout << "Cars in waiting queue:" << endl;
-    for (auto waiting_car : the_stage.get_wating_cars()) {
-        cout << "Car ID: " << waiting_car->get_id() << endl;
-        cout << "Luxury coefficient: " << waiting_car->get_luxury_coefficient()
-             << endl;
-    }
+    the_stage.print_stage_info();
+}
+
+void show_carwash_info_command(Carwash carwash) {
+    // 
 }
 
 void print_OK() { cout << "OK" << endl; }
@@ -249,6 +262,9 @@ Carwash handle_user_commands(Carwash carwash) {
         }
         if (!command.compare("show_stage_info")) {
             show_stage_info_command(carwash);
+        }
+        if (!command.compare("show_carwash_info")) {
+            show_carwash_info_command(carwash);
         }
     }
     return carwash;
