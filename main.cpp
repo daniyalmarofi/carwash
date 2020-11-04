@@ -23,6 +23,15 @@ class Car {
         if (timeleft > 0) timeleft -= 1;
     }
 
+    string car_info(bool need_timeleft) {
+        ostringstream outstring;
+        outstring << "Car ID: " << id << endl;
+        outstring << "Luxury coefficient: " << luxury_coefficient << endl;
+        if (need_timeleft) {
+            outstring << "Time left: " << timeleft << endl;
+        }
+    }
+
    private:
     int id;
     int luxury_coefficient;
@@ -103,18 +112,12 @@ class Stage {
                 outstring << "Free" << endl;
             } else {
                 Car* working_on_car = worker.get_working_car();
-                outstring << "Car ID: " << working_on_car->get_id() << endl;
-                outstring << "Luxury coefficient: "
-                          << working_on_car->get_luxury_coefficient() << endl;
-                outstring << "Time left: " << working_on_car->get_timeleft()
-                          << endl;
+                outstring << working_on_car->car_info(true);
             }
         }
         outstring << "Cars in waiting queue:" << endl;
         for (auto waiting_car : waiting_queue) {
-            outstring << "Car ID: " << waiting_car->get_id() << endl;
-            outstring << "Luxury coefficient: "
-                      << waiting_car->get_luxury_coefficient() << endl;
+            outstring << waiting_car->car_info(false);
         }
         return outstring.str();
     }
@@ -195,6 +198,15 @@ class Carwash {
 
     Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
 
+    string carwash_info() {
+        ostringstream outstring;
+        outstring << "Passed time: " << passed_time << endl;
+        outstring << "Cars waiting:" << endl;
+        for (auto waiting_car : waiting_queue) {
+            outstring << waiting_car->car_info(false);
+        }
+    }
+
    private:
     int number_of_workers;
     vector<Stage> stages;
@@ -245,7 +257,7 @@ void show_stage_info_command(Carwash carwash) {
 }
 
 void show_carwash_info_command(Carwash carwash) {
-    // 
+    //
 }
 
 void print_OK() { cout << "OK" << endl; }
