@@ -225,6 +225,12 @@ class Carwash {
         return outstring.str();
     }
 
+    void finish() {
+        while (finished_cars.size() == cars.size()) {
+            advance_time();
+        }
+    }
+
    private:
     int number_of_workers;
     vector<Stage> stages;
@@ -300,6 +306,9 @@ Carwash handle_user_commands(Carwash carwash) {
         }
         if (!command.compare("show_carwash_info")) {
             show_carwash_info_command(carwash);
+        }
+        if (!command.compare("finish")) {
+            carwash.finish();
         }
     }
     return carwash;
