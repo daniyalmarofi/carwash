@@ -4,6 +4,16 @@
 
 using namespace std;
 
+const string FREE_WORKER_LABEL          = "Free";
+const string WORKING_WORKER_LABEL       = "Working";
+const string SECCESSFUL_MESSAGE         = "OK";
+const string ADD_STAGE_COMMAND          = "add_stage";
+const string ADD_CAR_COMMAND            = "add_car";
+const string ADVANCE_TIME_COMMAND       = "advance_time";
+const string SHOW_STAGE_INFO_COMMAND    = "show_stage_info";
+const string SHOW_CARWASH_INFO_COMMAND  = "show_carwash_info";
+const string FINISH_COMMAND             = "finish";
+
 void print_error(string message) { cerr << message << endl; }
 
 class Car {
@@ -44,20 +54,20 @@ class Worker {
     Worker(int worker_id, int worker_time_coefficient) {
         id = worker_id;
         time_coefficient = worker_time_coefficient;
-        status = "Free";
+        status = FREE_WORKER_LABEL;
     }
     int get_id() { return id; }
     int get_time_coefficient() { return time_coefficient; }
     string get_status() { return status; }
     void toggle_status() {
-        if (status == "Free")
-            status = "Working";
+        if (status == FREE_WORKER_LABEL)
+            status = WORKING_WORKER_LABEL;
         else
-            status = "Free";
+            status = FREE_WORKER_LABEL;
     }
     Car* get_working_car() { return working_car; }
     void set_working_car(Car* _working_car) {
-        if (status == "Free") {
+        if (status == FREE_WORKER_LABEL) {
             toggle_status();
             working_car = _working_car;
         }
@@ -67,8 +77,8 @@ class Worker {
     string worker_info() {
         ostringstream outstring;
         outstring << "Worker ID: " << id << endl;
-        if (status == "Free") {
-            outstring << "Free" << endl;
+        if (status == FREE_WORKER_LABEL) {
+            outstring << FREE_WORKER_LABEL << endl;
         } else {
             outstring << working_car->car_info(true);
         }
@@ -117,7 +127,7 @@ class Stage {
 
     void wash_the_cars() {
         for (int i = 0; i < workers.size(); i++)
-            if (workers[i].get_status() == "Working") {
+            if (workers[i].get_status() == WORKING_WORKER_LABEL) {
                 workers[i].wash_the_car();
             }
     }
@@ -144,7 +154,7 @@ class Stage {
    private:
     Worker* find_finished_worker() {
         for (int i = 0; i < workers.size(); i++) {
-            if (workers[i].get_status() == "Working" &&
+            if (workers[i].get_status() == WORKING_WORKER_LABEL &&
                 workers[i].get_working_car()->get_timeleft() == 0) {
                 return &workers[i];
             }
@@ -154,7 +164,8 @@ class Stage {
 
     Worker* get_free_worker() {
         for (int i = 0; i < workers.size(); i++)
-            if (workers[i].get_status() == "Free") return &workers[i];
+            if (workers[i].get_status() == FREE_WORKER_LABEL)
+                return &workers[i];
         return NULL;
     }
     vector<Worker> workers;
@@ -303,30 +314,30 @@ void show_carwash_info_command(Carwash carwash) {
     cout << carwash.carwash_info();
 }
 
-void print_OK() { cout << "OK" << endl; }
+void print_OK() { cout << SECCESSFUL_MESSAGE << endl; }
 
 Carwash handle_user_commands(Carwash carwash) {
     string command;
     while (cin >> command) {
-        if (!command.compare("add_stage")) {
+        if (!command.compare(ADD_STAGE_COMMAND)) {
             carwash = add_stage_command(carwash);
             print_OK();
         }
-        if (!command.compare("add_car")) {
+        if (!command.compare(ADD_CAR_COMMAND)) {
             carwash = add_car_command(carwash);
             print_OK();
         }
-        if (!command.compare("advance_time")) {
+        if (!command.compare(ADVANCE_TIME_COMMAND)) {
             carwash = advance_time_command(carwash);
             print_OK();
         }
-        if (!command.compare("show_stage_info")) {
+        if (!command.compare(SHOW_STAGE_INFO_COMMAND)) {
             show_stage_info_command(carwash);
         }
-        if (!command.compare("show_carwash_info")) {
+        if (!command.compare(SHOW_CARWASH_INFO_COMMAND)) {
             show_carwash_info_command(carwash);
         }
-        if (!command.compare("finish")) {
+        if (!command.compare(FINISH_COMMAND)) {
             carwash.finish();
             print_OK();
         }
