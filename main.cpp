@@ -100,6 +100,19 @@ class Stage {
         }
     }
 
+    void add_worker_to_car(Worker* worker, Car* car) {
+        car->set_timeleft(worker->get_time_coefficient());
+        worker->set_working_car(car);
+    }
+
+    void add_a_car_from_queue() {
+        Worker* free_worker = get_free_worker();
+        if (waiting_queue.size() > 0 && free_worker != NULL) {
+            add_worker_to_car(free_worker, waiting_queue.front());
+            waiting_queue.erase(waiting_queue.begin());
+        }
+    }
+
     vector<Car*> get_waiting_cars() { return waiting_queue; }
 
     void wash_the_cars() {
@@ -177,6 +190,12 @@ class Carwash {
         }
     }
 
+    void add_a_waiting_car_to_stage() {
+        add_a_car_to_first_stage();
+        for (int i = 0; i < stages.size(); i++)
+            stages[i].add_a_car_from_queue();
+    }
+
     void add_car_to_finished_cars(Car* finished_car) {
         finished_cars.push_back(finished_car);
     }
@@ -201,7 +220,8 @@ class Carwash {
         for (int i = 0; i < stages.size(); i++) {
             stages[i].wash_the_cars();
         }
-        add_a_car_to_first_stage();
+        // add_a_car_to_first_stage();
+        add_a_waiting_car_to_stage();
     }
 
     Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
