@@ -220,11 +220,16 @@ class Carwash {
         for (int i = 0; i < stages.size(); i++) {
             stages[i].wash_the_cars();
         }
-        // add_a_car_to_first_stage();
         add_a_waiting_car_to_stage();
     }
 
     Stage get_stage_by_id(int stage_id) { return stages[stage_id]; }
+
+    void finish() {
+        while (finished_cars.size() != cars.size()) {
+            advance_time();
+        }
+    }
 
     string carwash_info() {
         ostringstream outstring;
@@ -243,12 +248,6 @@ class Carwash {
             outstring << finished_car->car_info(false);
         }
         return outstring.str();
-    }
-
-    void finish() {
-        while (finished_cars.size() == cars.size()) {
-            advance_time();
-        }
     }
 
    private:
@@ -329,6 +328,7 @@ Carwash handle_user_commands(Carwash carwash) {
         }
         if (!command.compare("finish")) {
             carwash.finish();
+            print_OK();
         }
     }
     return carwash;
